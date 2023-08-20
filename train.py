@@ -125,9 +125,9 @@ def train_val(args , save_dir):
 
     for img in breast_img:
         if img[-5] == '0' :
-            y.append(0)
+            y.append("non_cancer")
         elif img[-5] == '1' :
-            y.append(1)
+            y.append("cancer")
         x.append(img)
     
     data = {'x_col': x, 'y_col': y}
