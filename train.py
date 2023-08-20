@@ -15,6 +15,7 @@ import argparse
 import pickle
 import keras
 import cv2
+import glob
 import os
 import json
 import tensorflow 
@@ -117,25 +118,40 @@ def train_val(args , save_dir):
     
     BS = args.batch_size
     
+    breast_img = glob.glob(args.train, recursive = True)
+
+    x = []
+    y = []
+
+    for img in breast_img:
+        if img[-5] == '0' :
+            y.append(0)
+        elif img[-5] == '1' :
+            y.append(1)
+        x.append(img)
+    
+    data = {'x_col': x, 'y_col': y}
+    df = pd.DataFrame(data)
+    
     aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
         width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
         horizontal_flip=True, fill_mode="nearest", validation_split=0.2)
     
     aug_tmp = ImageDataGenerator(rescale=1./255)
     
-    train_generator = aug.flow_from_directory(directory=args.train, 
+    train_generator = aug.flow_from_dataframe(dataframe=df, 
                                                     target_size=(args.im_size, args.im_size),
-                                                    # classes=['NORMAL','PNEUMONIA','TURBERCULOSIS'],
-                                                    # color_mode="grayscale",
+                                                    x_col='x_col',
+                                                    y_col='y_col',
                                                     subset = "training",
                                                     batch_size=64,
                                                     class_mode="categorical",
                                                     shuffle=True,seed=1234)
     
-    val_generator = aug.flow_from_directory(directory=args.train,
+    val_generator = aug.flow_from_dataframe(dataframe=df, 
                                                     target_size=(args.im_size, args.im_size),
-                                                    # classes=['NORMAL','PNEUMONIA','TURBERCULOSIS'],
-                                                    # color_mode="grayscale",
+                                                    x_col='x_col',
+                                                    y_col='y_col',
                                                     subset = "validation",
                                                     batch_size=64,
                                                     class_mode="categorical",
@@ -186,6 +202,15 @@ def train_val(args , save_dir):
     summaries.append([loss_test, accuracy_test, auc_test, f1_test, precision_test, recall_test])
 
     pd.DataFrame(summaries).to_csv(os.path.join(figures_path, 'result.csv')) 
+    
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'], loc='upper left')
+    plt.savefig(os.path.join(figures_path,'his.png'))
+    plt.close()
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
