@@ -99,16 +99,7 @@ n_class = 2
 
 
 def train_val(args , save_dir):
-    
-    # train_datagen = ImageDataGenerator(
-    #     featurewise_center=True,
-    #     featurewise_std_normalization=True,
-    #     rotation_range=20,
-    #     width_shift_range=0.2,
-    #     height_shift_range=0.2,
-    #     horizontal_flip=True,
-    #     validation_split=0.2)
-    # valid_datagen = ImageDataGenerator(rescale=1./255)
+
         
     figures_path = save_dir
     
@@ -118,41 +109,27 @@ def train_val(args , save_dir):
     
     BS = args.batch_size
     
-    breast_img = glob.glob(args.train, recursive = True)
 
-    x = []
-    y = []
-
-    for img in breast_img:
-        if img[-5] == '0' :
-            y.append("non_cancer")
-        elif img[-5] == '1' :
-            y.append("cancer")
-        x.append(img)
-    
-    data = {'x_col': x, 'y_col': y}
-    df = pd.DataFrame(data)
+    data = pd.read_csv(args.train)
     
     aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
         width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
-        horizontal_flip=True, fill_mode="nearest", validation_split=0.2)
+        horizontal_flip=True, fill_mode="nearest")
     
     aug_tmp = ImageDataGenerator(rescale=1./255)
     
-    train_generator = aug.flow_from_dataframe(dataframe=df, 
+    train_generator = aug.flow_from_dataframe(dataframe=data[data['type'] == "train"], 
                                                     target_size=(args.im_size, args.im_size),
-                                                    x_col='x_col',
-                                                    y_col='y_col',
-                                                    subset = "training",
+                                                    x_col='path',
+                                                    y_col='label',
                                                     batch_size=64,
                                                     class_mode="categorical",
                                                     shuffle=True,seed=1234)
     
-    val_generator = aug.flow_from_dataframe(dataframe=df, 
+    val_generator = aug_tmp.flow_from_dataframe(dataframe=data[data['type'] == "test"] , 
                                                     target_size=(args.im_size, args.im_size),
-                                                    x_col='x_col',
-                                                    y_col='y_col',
-                                                    subset = "validation",
+                                                    x_col='path',
+                                                    y_col='label',
                                                     batch_size=64,
                                                     class_mode="categorical",
                                                     shuffle=True,seed=1234)
@@ -216,7 +193,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-sb', '--savedir_base', default='CovidSeg/save')
     parser.add_argument('-tr', '--train', default='CovidSeg/dataset')
-    parser.add_argument('-va', '--val', default='CovidSeg/dataset')
+    # parser.add_argument('-va', '--val', default='CovidSeg/dataset')
     parser.add_argument("-b", "--base", default='') # efficientnet-b0 
     parser.add_argument("-bs", "--batch_size", type=int, default=64) # batch_size
     parser.add_argument("-i", "--im_size", type=int, default=256) # image size for input
