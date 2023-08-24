@@ -112,9 +112,11 @@ def train_val(args , save_dir):
 
     data = pd.read_csv(args.train)
     
-    aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
-        width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
-        horizontal_flip=True, fill_mode="nearest")
+    # aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
+    #     width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
+    #     horizontal_flip=True, fill_mode="nearest")
+
+    aug = ImageDataGenerator(rescale=1./255)
     
     aug_tmp = ImageDataGenerator(rescale=1./255)
     
