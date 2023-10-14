@@ -112,13 +112,17 @@ def train_val(args , save_dir):
 
     data = pd.read_csv(args.train)
     
-    # aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
-    #     width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
-    #     horizontal_flip=True, fill_mode="nearest")
+    aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
+        width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
+        horizontal_flip=True, fill_mode="nearest")
 
-    aug = ImageDataGenerator(rescale=1./255)
+    aug_tmp = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
+        width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
+        horizontal_flip=True, fill_mode="nearest")
+
+    # aug = ImageDataGenerator(rescale=1./255)
     
-    aug_tmp = ImageDataGenerator(rescale=1./255)
+    # aug_tmp = ImageDataGenerator(rescale=1./255)
     
     train_generator = aug.flow_from_dataframe(dataframe=data[data['type'] == "train"], 
                                                     target_size=(args.im_size, args.im_size),
@@ -145,8 +149,8 @@ def train_val(args , save_dir):
                                  verbose=1,
                                  save_best_only=True,
                                  mode='max')
-#     earlystopping = keras.callbacks.EarlyStopping(monitor='val_accuracy', 
-#                                                   patience=15)
+    earlystopping = keras.callbacks.EarlyStopping(monitor='val_accuracy', 
+                                                  patience=10)
     
     step_train = train_generator.n//64
     step_val = val_generator.n//64
@@ -159,11 +163,11 @@ def train_val(args , save_dir):
     history = model.fit_generator(generator=train_generator, steps_per_epoch=step_train,
                     validation_data=val_generator,
                     validation_steps=step_val,
-                    callbacks=[checkpoint],
+                    callbacks=[checkpoint,earlystopping],
                     epochs=args.epochs)
 
     # eval
-    model.save(os.path.join(figures_path,'model.h5'))
+    # model.save(os.path.join(figures_path,'model.h5'))
     
     model.load_weights(checkpoint_path)
     
