@@ -280,13 +280,26 @@ def get_base(base_name, img_size, n_classes):
         base = tf.keras.applications.EfficientNetB7(include_top=False, weights="imagenet", input_shape=(img_size,img_size,3) )
     
     x = base.output
+    # Add some new Fully connected layers to
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.25)(x)
-    # x = GlobalAveragePooling2D()(x)
-    x = Dense(128, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
     x = Dropout(0.25)(x)
-    x = Dense(128, activation='relu')(x)
-    x = Dropout(0.25)(x)
-    x = Flatten()(x)
+    x = Dense(512, activation='relu')(x)
+    # outs = Dense(n_class, activation='softmax')(x)
+
+    # Đóng băng các layer của base_model
+    for layer in base_model.layers:
+        layer.trainable = False
+
+    # x = base.output
+    # x = Dropout(0.25)(x)
+    # x = Dense(128, activation='relu')(x)
+    # x = Dropout(0.25)(x)
+    # x = Dense(128, activation='relu')(x)
+    # x = Dropout(0.25)(x)
+    # x = Flatten()(x)
     
     outs = Dense(n_classes, activation='softmax')(x)
     model = Model(inputs=base.inputs, outputs= outs)
