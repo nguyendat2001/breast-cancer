@@ -123,9 +123,9 @@ def vgg16(img_size):
     model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
     model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
     model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-    model.add(Flatten())
-    model.add(Dense(units=4096,activation="relu"))
-    model.add(Dense(units=4096,activation="relu"))
+    # model.add(Flatten())
+    # model.add(Dense(units=4096,activation="relu"))
+    # model.add(Dense(units=4096,activation="relu"))
     # model.add(Dense(units=n_class, activation="softmax"))
     return model
 
@@ -200,7 +200,7 @@ def ResNet50(input_shape = (50, 50, 3)):
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='b')
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='c')
     X = AveragePooling2D(pool_size=(2, 2),name='avg_pool')(X)
-    X = Flatten()(X)
+    # X = Flatten()(X)
     model = Model(inputs = X_input, outputs = X)
     return model
 
