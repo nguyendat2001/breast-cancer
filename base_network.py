@@ -289,8 +289,8 @@ def get_base(base_name, img_size, n_classes):
     x = Dense(512, activation='relu')(x)
     # outs = Dense(n_class, activation='softmax')(x)
 
-    # Đóng băng các layer của base_model
-    for layer in base_model.layers:
+    # Đóng băng các layer của base
+    for layer in base.layers:
         layer.trainable = False
 
     # x = base.output
