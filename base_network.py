@@ -280,6 +280,12 @@ def get_base(base_name, img_size, n_classes):
         base = tf.keras.applications.EfficientNetB7(include_top=False, weights="imagenet", input_shape=(img_size,img_size,3) )
     
     x = base.output
+    
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.25)(x)
+    x = Dense(128, activation='relu')(x)
+    x = Dropout(0.25)(x)
     x = Flatten()(x)
     
     outs = Dense(n_classes, activation='softmax')(x)
