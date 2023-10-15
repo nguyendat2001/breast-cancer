@@ -199,7 +199,7 @@ def ResNet50(input_shape = (50, 50, 3)):
     X = convolutional_block(X, f = 3, filters = [512, 512, 2048], stage = 5, block='a', s = 2)
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='b')
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='c')
-    # X = AveragePooling2D(pool_size=(2, 2),name='avg_pool')(X)
+    X = AveragePooling2D(pool_size=(2, 2),name='avg_pool')(X)
     # X = Flatten()(X)
     model = Model(inputs = X_input, outputs = X)
     return model
@@ -281,7 +281,7 @@ def get_base(base_name, img_size, n_classes):
     
     x = base.output
     # Add some new Fully connected layers to
-    x = GlobalAveragePooling2D()(x)
+    # x = GlobalAveragePooling2D()(x)
     x = Dense(1024, activation='relu')(x)
     x = Dropout(0.25)(x)
     x = Dense(1024, activation='relu')(x)
@@ -299,7 +299,7 @@ def get_base(base_name, img_size, n_classes):
     # x = Dropout(0.25)(x)
     # x = Dense(128, activation='relu')(x)
     # x = Dropout(0.25)(x)
-    # x = Flatten()(x)
+    x = Flatten()(x)
     
     outs = Dense(n_classes, activation='softmax')(x)
     model = Model(inputs=base.inputs, outputs= outs)
