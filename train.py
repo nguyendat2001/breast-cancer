@@ -97,6 +97,10 @@ n_class = 2
 
 #     return pixels, labels
 
+def to_grayscale_then_rgb(image):
+    image = tf.image.rgb_to_grayscale(image)
+    # image = tf.image.grayscale_to_rgb(image)
+    return image
 
 def train_val(args , save_dir):
 
@@ -112,11 +116,11 @@ def train_val(args , save_dir):
 
     data = pd.read_csv(args.train)
     
-    aug = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
+    aug = ImageDataGenerator(rescale=1./255,preprocessing_function=to_grayscale_then_rgb, rotation_range=20, zoom_range=0.2,
         width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
         horizontal_flip=True, fill_mode="nearest")
 
-    aug_tmp = ImageDataGenerator(rescale=1./255, rotation_range=20, zoom_range=0.2,
+    aug_tmp = ImageDataGenerator(rescale=1./255,preprocessing_function=to_grayscale_then_rgb, rotation_range=20, zoom_range=0.2,
         width_shift_range=0.2, height_shift_range=0.2, shear_range=0.15, brightness_range=[1,1.5],
         horizontal_flip=True, fill_mode="nearest")
 
