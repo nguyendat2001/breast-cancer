@@ -98,9 +98,9 @@ n_class = 2
 #     return pixels, labels
 
 def to_grayscale_then_rgb(image):
-    image = tf.image.rgb_to_grayscale(image)
-    # image = tf.image.grayscale_to_rgb(image)
-    return image
+    image = image[:,:,0]
+    rgb_batch = np.repeat(image[..., np.newaxis], 3, -1)
+    return rgb_batch
 
 def train_val(args , save_dir):
 
