@@ -1,3 +1,5 @@
+##  python /kaggle/working/breast-cancer/train.py -sb "./resnet/" -tr "/kaggle/working/breast-cancer/breast.csv" -i 50 -b "resnet50" -e 50 -bs 64
+##  python /kaggle/working/breast-cancer/train.py -sb "./xception/" -tr "/kaggle/working/breast-cancer/breast.csv" -i 50 -b "xception" -e 50 -bs 64
 tensorflow
 keras
 opencv-python
