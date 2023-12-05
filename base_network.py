@@ -200,7 +200,7 @@ def ResNet50(input_shape = (50, 50, 3)):
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='b')
     X = identity_block(X, 3, [512, 512, 2048], stage=5, block='c')
     X = AveragePooling2D(pool_size=(2, 2),name='avg_pool')(X)
-    # X = Flatten()(X)
+    X = Flatten()(X)
     model = Model(inputs = X_input, outputs = X)
     return model
 
