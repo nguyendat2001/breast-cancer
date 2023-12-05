@@ -122,10 +122,10 @@ def vgg16(img_size):
     model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
     model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
     model.add(Conv2D(filters=512, kernel_size=(3,3), padding="same", activation="relu"))
-    # model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
-    # model.add(Flatten())
-    # model.add(Dense(units=4096,activation="relu"))
-    # model.add(Dense(units=4096,activation="relu"))
+    model.add(MaxPool2D(pool_size=(2,2),strides=(2,2)))
+    model.add(Flatten())
+    model.add(Dense(units=4096,activation="relu"))
+    model.add(Dense(units=4096,activation="relu"))
     # model.add(Dense(units=n_class, activation="softmax"))
     return model
 
@@ -280,7 +280,7 @@ def get_base(base_name, img_size, n_classes):
         base = tf.keras.applications.EfficientNetB7(include_top=False, weights="imagenet", input_shape=(img_size,img_size,3) )
     
     x = base.output
-    x = Flatten()(x)
+    # x = Flatten()(x)
     
     outs = Dense(n_classes, activation='softmax')(x)
     model = Model(inputs=base.inputs, outputs= outs)
