@@ -167,7 +167,7 @@ def train_val(args , save_dir):
     history = model.fit_generator(generator=train_generator, steps_per_epoch=step_train,
                     validation_data=val_generator,
                     validation_steps=step_val,
-                    callbacks=[checkpoint,earlystopping],
+                    callbacks=[checkpoint],
                     epochs=args.epochs)
 
     # eval
